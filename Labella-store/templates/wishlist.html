@@ -1,0 +1,270 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<link href="{%static 'https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900'%}" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/alertify.min.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/themes/default.min.css"/>
+<link rel="stylesheet" href="{%static 'paginator/css/ionicons.min.css'%}">
+<link rel="stylesheet" href="{%static 'paginator/css/style.css'%}">
+
+
+
+<div class="extra_space" style="height: 60px;">
+
+</div>
+<!-- Product -->
+<div class="bg0 m-t-23 p-b-140">
+	<div class="container ">
+		<div class="flex-w flex-sb-m p-b-52">
+			<div class="flex-w flex-l-m filter-tope-group m-tb-10">
+				<a href="" class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 how-active1 font-weight-bold" data-filter="*"><h3>
+					Wishlist
+				</h3></a>
+			   
+			</div>
+
+			<div class="flex-w flex-c-m m-tb-10">
+				
+
+				<div class="flex-c-m stext-106 cl6 size-105 bor4 pointer hov-btn3 trans-04 m-tb-4 js-show-search">
+					<i class="icon-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-search"></i>
+					<i class="icon-close-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-close dis-none"></i>
+					Search
+				</div>
+			</div>
+
+			<!-- Search product -->
+			<div class="dis-none panel-search w-full p-t-10 p-b-15">
+				<div class="bor8 dis-flex p-l-15">
+					<form class="ec-btn-group-form" action="{% url 'search1' %}" method="GET">
+						<input class="form-control ec-search-bar" placeholder="Search products..." name="keyword"
+							type="text">
+						<button class="submit" type="submit"></button>
+					</form>
+
+				</div>	
+			</div>
+			
+			
+		</div>
+		
+		
+		<div class="row isotope-grid cartdata">
+			{% if not wishlist %}
+			<h2 class="text-center"> Your wishlist is Empty</h2>
+			<br>
+			<br>
+			<div class="text-center">
+				<a href="{% url 'store' %}" class="btn btn-primary">Continue Shopping</a>
+			</div>
+		
+		{% else %}
+		<div class="row isotope-grid cartdata">
+			{% for item in wishlist %}
+			
+			<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women product_data">
+		  
+				<!-- Block2 -->
+				<div class="block2">
+					<div class="block2-pic hov-img0">
+						<a href="{{ item.product.get_url }}"><img src="{{item.product.images.url}}" alt="IMG-PRODUCT"></a>
+
+                        <!-- Button to trigger the modal -->
+                        <a href="#" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal" data-product-id="{{ item.product.id }}" data-product-slug="{{item.product.slug}}" data-category-slug="{{item.product.category.slug}}">
+                            Quick View
+                        </a>
+					</div>
+
+					<div class="block2-txt flex-w flex-t p-t-14 d-flex justify-content-between"> 
+                        <div class="block2-txt-child1 flex-col-l ">
+							{% csrf_token %}
+							<a href="{{ item.get_url }}" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+								{{item.product.product_name}}
+							</a>
+
+							<span class="stext-105 cl3">
+								${{item.product.price}}
+							</span>
+						</div>
+						
+						<div class="block2-txt-child2 flex-r p-t-3">
+							{% csrf_token %}
+							
+							<a data-prod_id="{{item.product.id}}" class="btn-addwish-b2 deleteWishlit dis-block pos-relative js-addwish-b2 blue">
+								<br>
+                			    <img class="icon-heart1 dis-block trans-04" src="{%static 'images/icons/icon-heart-02.png'%}" alt="ICON">
+			                    <img class="icon-heart2 dis-block trans-04 ab-t-l" src="{%static 'images/icons/icon-heart-01.png'%}" alt="ICON">
+							</a>
+			
+			
+			{% comment %} <a href="{% url 'add_cart' i.product.id %}" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-cart">
+			  <i class="zmdi zmdi-shopping-cart"></i>
+			</a> {% endcomment %}
+			<a href="{% url 'add_cart' item.product.id %}?from_wishlist=true" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-cart">
+                <br>
+				<i class="zmdi zmdi-shopping-cart"></i>
+			</a>
+							
+						</div>
+					</div>
+				</div>
+			</div>
+			{% endfor %}
+			{% endif %}
+		</div>
+		
+		<!-- The Modal -->
+        <div id="productModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close-modal">×</span>
+                <div class="modal-body">
+                    <h2 id="productName">Product Name</h2>
+                    <img id="productImage" src="" alt="Product Image" style="max-width: 200px;"> 
+                    <p id="productPrice">Product Price</p>
+                    <button id="addToCartBtn">Add to Cart</button> 
+                </div>
+            </div>
+        </div>
+		
+		<!-- Load more -->
+		  <div class="flex-c-m flex-w w-full p-t-45">
+			
+			{% if products.has_other_pages %}
+				
+			
+				
+			<div class="block-27">
+	  <ul class="">
+		{% if products.has_previous %}
+		<li><a href="?page={{products.previous_page_number}}"><</a></li>
+		{% else %}
+		<li class=""><a href="#" style="pointer-events: none;"><</a></li>
+		{% endif %}
+
+		
+		{% for i in products.paginator.page_range %}
+		
+		{% if products.number == i %}
+		<li class="active"><a href=""><span>{{i}}</span></a></li>
+		{% else %}
+		<li class=""><a href="?page={{i}}"><span>{{i}}</span></a></li>
+
+		{% endif %}
+			
+		{% endfor %}
+			
+		
+		
+		{% if products.has_next %}
+			
+		<li><a href="?page={{products.next_page_number}}">></a></li>
+		{% else %}
+		<li><a href="#" style="pointer-events: none;">></a></li>
+		{% endif %}
+	  </ul>
+	</div>
+	{% endif %}
+		</div>   
+		
+	</div>
+	
+</div> 
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/alertifyjs/build/alertify.min.js"></script>
+<script src="{%static 'paginator/js/jquery.min.js'%}"></script>
+<script src="{%static 'paginator/js/popper.js'%}"></script>
+<script src="{%static 'paginator/js/bootstrap.min.js'%}"></script>
+<script src="{%static 'paginator/js/main.js'%}"></script>
+
+<script src="{% static 'https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js' %}"></script>
+
+<script src="{% static 'https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js' %}" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
+<script src="{% static 'https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js' %}" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/alertifyjs/build/alertify.min.js"></script>
+<script>
+$(document).ready(function() {
+
+    // Get the modal elements
+    const modal = document.getElementById("productModal");
+    const closeModalBtn = document.querySelector(".close-modal");
+    const quickViewButtons = document.querySelectorAll(".js-show-modal");
+    const productName = document.getElementById("productName");
+    const productImage = document.getElementById("productImage");
+    const productPrice = document.getElementById("productPrice");
+    
+
+    // Function to open the modal
+    function openModal(productSlug, categorySlug) { 
+        $.ajax({
+            url: `/store/${categorySlug}/${productSlug}/`, // URL to your product_detail view
+            type: 'GET',
+            success: function (data) {
+                console.log(data)
+                // Update the modal content
+                productName.textContent = data.single_product.product_name;
+                productImage.src = data.single_product.images.url;
+                productPrice.textContent = '$' + data.single_product.price;
+                // ... add other product details as needed
+                modal.style.display = "block";
+            },
+            error: function (error) {
+                console.error('Error fetching product details:', error);
+                // Handle the error, maybe display a message to the user
+            }
+        });
+    }
+
+    // Attach event listeners to "Quick View" buttons
+    quickViewButtons.forEach(button => {
+        button.addEventListener("click", (event) => {
+            event.preventDefault(); 
+            const productId = button.dataset.productId;
+            const productSlug = button.dataset.productSlug;
+            const categorySlug = button.dataset.categorySlug;
+            openModal(productSlug, categorySlug); 
+        });
+    });
+
+    // Close the modal when the user clicks on <span> (x)
+    closeModalBtn.addEventListener("click", () => {
+        modal.style.display = "none";
+    });
+
+    // Close the modal when the user clicks outside of it
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+	$(document).on('click', '.deleteWishlit', function(e) {
+		e.preventDefault();
+
+		
+		var prod_id = $(this).data('prod_id');
+		console.log(prod_id,"daxo");
+		var token = $('input[name=csrfmiddlewaretoken]').val();
+		console.log(prod_id);
+
+		$.ajax({
+			method: "POST",
+			url: "/wishlist/deletewishlist/",
+			data: {
+				'prod_id': prod_id,
+				csrfmiddlewaretoken: '{{csrf_token}}'
+			},
+			success: function(response) {
+                
+				alertify.success(response.status);
+				$('.cartdata').load(location.href + " .cartdata");
+			}
+		});
+	});
+});
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h2>Orders Report</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>User Email</th>
+                <th>Total Amount</th>
+                <th>Paymnt Mode</th>
+                <th>Tracking Number</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in expenses %}
+            <tr>
+                <td>{{ order.id }}</td>
+                <td>{{ order.user }}</td>
+                <td>{{ order.total_price }}</td>
+                <td>{{ order.payment_mode }}</td>
+                <td>{{ order.tracking_no }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

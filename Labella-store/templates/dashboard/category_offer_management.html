@@ -1,0 +1,128 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="card-body table-responsive">
+  <h4 class="card-title">Category Offer Management</h4>
+
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addCategoryOfferModal">
+    Add Category Offer
+  </button>
+
+  <!-- Modal for Adding Category Offer -->
+  <div class="modal fade" id="addCategoryOfferModal" tabindex="-1" role="dialog" aria-labelledby="addCategoryOfferModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addCategoryOfferModalLabel">Add Category Offer</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action="{% url 'add_category_offer' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="categoryOfferName">Offer Name:</label>
+              <input type="text" class="form-control" id="categoryOfferName" name="offer_name" placeholder="Enter offer name" required>
+            </div>
+            <div class="form-group">
+              <label for="categoryOfferDescription">Offer Description:</label>
+              <textarea class="form-control" id="categoryOfferDescription" name="offer_description" placeholder="Enter offer description"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="categoryOfferDiscount">Discount (%):</label>
+              <input type="number" class="form-control" id="categoryOfferDiscount" name="offer_discount" placeholder="Enter discount (1-30)" min="1" max="30" required>
+            </div>
+            <div class="form-group">
+              <label for="categoryOfferValidTill">Expiry Date:</label>
+              <input type="date" class="form-control" id="categoryOfferValidTill" name="valid_till" required>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table for Displaying Category Offers -->
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Offer Name</th>
+        <th>Offer Description</th>
+        <th>Discount (%)</th>
+        <th>Expiry Date</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for category_offer in category_offers %}
+      <tr>
+        <td>{{ category_offer.offer_name }}</td>
+        <td>{{ category_offer.offer_description }}</td>
+        <td>{{ category_offer.offer_discount }}</td>
+        <td>{{ category_offer.valid_till }}</td>
+        <td>
+          <!-- Delete Button with Confirmation -->
+          <a class="btn btn-danger me-2" href="#" onclick="confirmDelete('{% url 'delete_category_offer' category_offer.id %}')">Delete</a>
+          <!-- Edit Button triggering Modal -->
+          <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#editCategoryOfferModal{{ category_offer.id }}">Edit</button>
+
+          <!-- Modal for Editing Category Offer -->
+          <div class="modal fade" id="editCategoryOfferModal{{ category_offer.id }}" tabindex="-1" role="dialog" aria-labelledby="editCategoryOfferModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="editCategoryOfferModalLabel">Edit Category Offer</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <form action="{% url 'edit_category_offer' category_offer.id %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-group">
+                      <label for="editCategoryOfferName">Offer Name:</label>
+                      <input type="text" class="form-control" id="editCategoryOfferName" name="offer_name" value="{{ category_offer.offer_name }}" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="editCategoryOfferDescription">Offer Description:</label>
+                      <textarea class="form-control" id="editCategoryOfferDescription" name="offer_description" >{{ category_offer.offer_description }}</textarea>
+                    </div>
+                    <div class="form-group">
+                      <label for="editCategoryOfferDiscount">Discount (%):</label>
+                      <input type="number" class="form-control" id="editCategoryOfferDiscount" name="offer_discount" value="{{ category_offer.offer_discount }}" min="1" max="30" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="editCategoryOfferValidTill">Expiry Date:</label>
+                      <input type="date" class="form-control" id="editCategoryOfferValidTill" name="valid_till" value="{{ category_offer.valid_till }}" required>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                      <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script>
+  // JavaScript function for Delete Confirmation
+  function confirmDelete(deleteUrl) {
+    if (confirm("Are you sure you want to delete this category offer? This action cannot be undone.")) {
+      window.location.href = deleteUrl;
+    }
+  }
+</script>
+{% endblock %}

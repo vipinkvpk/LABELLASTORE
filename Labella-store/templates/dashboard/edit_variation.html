@@ -1,0 +1,53 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="card-body table-responsive">
+    <h4 class="card-title">Edit Variation</h4>
+    <form action="{% url 'edit_variants' variant.id %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="productCategory">Products</label>
+            <select class="form-control" id="productCategory" name="product">
+                {% for product in products %}
+                <option value="{{ product.id }}" {% if product.id == variant.product.id %} selected {% endif %}>
+                    {{ product.product_name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="variationCategory">Variation Category</label>
+            <select class="form-control" id="variationCategory" name="variation_category">
+                {% for choice in choices %}
+                <option value="{{ choice.0 }}" {% if choice.0 == variant.variation_category %} selected {% endif %}>
+                    {{ choice.1 }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="variationValue">Variation Value</label>
+            <input type="text" class="form-control" id="variationValue" name="variation_value"
+                value="{{ variant.variation_value }}">
+        </div>
+        <div class="form-group">
+            <label for="price">Price</label>
+            <input type="number" class="form-control" id="price" name="price" value="{{ variant.price }}">
+        </div>
+        <div class="form-group">
+            <label for="stock">Stock</label>
+            <input type="number" class="form-control" id="stock" name="stock" value="{{ variant.stock }}">
+        </div>
+        <div class="form-group ms-4">
+            <input type="checkbox" class="form-check-input" id="availabilityCheckbox" name="is_available"
+                value="True" {% if variant.is_active %} checked {% endif %}>
+            <label class="form-check-label pt-2" for="availabilityCheckbox">Available</label>
+        </div>
+        <div class="modal-footer">
+            <a href="{% url 'variants' %}" class="btn btn-secondary">Cancel</a>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

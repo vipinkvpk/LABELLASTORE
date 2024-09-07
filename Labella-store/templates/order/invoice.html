@@ -1,0 +1,620 @@
+{% comment %} {% comment %} {% extends 'base.html' %}
+{% block content %}
+<h1>Invoice</h1>
+<p>Order ID: {{ order.id }}</p>
+<p>Tracking No: {{ order.tracking_no }}</p>
+<p>Total Price: ${{ order.total_price }}</p>
+<p>Payment Mode: {{ order.payment_mode }}</p>
+{% if order.usercoupon %}
+<p>Coupon Applied: {{ order.usercoupon.coupon.code }} ({{ order.usercoupon.coupon.discount }}% off)</p>
+{% endif %}
+<p>Shipping Address: {{ order.address.address }}, {{ order.address.city }}, {{ order.address.state }}, {{ order.address.country }}, {{ order.address.pincode }}</p>
+
+<h2>Order Items:</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in order_items %}
+        <tr>
+            <td>{{ item.product.product_name }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>${{ item.price }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %} {% endcomment %}
+
+
+{% comment %} <!DOCTYPE html>
+<html>
+<head>
+    <title>Invoice</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #000; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>Invoice</h1>
+    <p>Order Date: {{ order.order }}</p>
+    <p>Order ID: {{ order.id }}</p>
+    <p>Tracking No: {{ order.tracking_no }}</p>
+    <p>Total Price: ${{ order.total_price }}</p>
+    <p>Payment Mode: {{ order.payment_mode }}</p>
+
+
+    {% if order.usercoupon %}
+    <p>Coupon Applied: {{ order.usercoupon.coupon.code }} ({{ order.usercoupon.coupon.discount }}% off)</p>
+    {% endif %}
+    <p>Shipping Address: {{ order.address.address }}, {{ order.address.city }}, {{ order.address.state }}, {{ order.address.country }}, {{ order.address.pincode }}</p>
+
+    <h2>Order Items:</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in order_items %}
+            <tr>
+                <td>{{ item.product.product_name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>${{ item.price }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html> {% endcomment %}
+
+
+
+
+{% comment %} <!DOCTYPE html>
+<html>
+<head>
+    <title>Invoice</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #000; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>Invoice</h1>
+    <p>Order ID: {{ order.id }}</p>
+    <p>Order Date: {{ order.created_at }}</p>
+    <p>Status: {{ order.get_status_display }}</p>
+    <p>Tracking No: {{ order.tracking_no }}</p>
+    <p>Payment Mode: {{ order.payment_mode }}</p>
+    {% if order.usercoupon %}
+    <p>Coupon Applied: {{ order.usercoupon.coupon.code }} ({{ order.usercoupon.coupon.discount }}% off)</p>
+    {% endif %}
+    <p>Shipping Address: {{ order.address.address }}, {{ order.address.city }}, {{ order.address.state }}, {{ order.address.country }}, {{ order.address.pincode }}</p>
+
+    <h2>Order Items:</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in order_items %}
+            <tr>
+                <td>{{ item.product.product_name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>${{ item.price }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Summary:</h2>
+    <table>
+        <tbody>
+            <tr>
+                <th>Subtotal:</th>
+                <td>${{ subtotal }}</td>
+            </tr>
+            <tr>
+                <th>Tax (10%):</th>
+                <td>${{ tax }}</td>
+            </tr>
+            <tr>
+                <th>Grand Total:</th>
+                <td>${{ grand_total }}</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html> 
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Invoice</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #000; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>Invoice</h1>
+    <p>Order ID: {{ order.id }}</p>
+    <p>Order Date: {{ order.created_at }}</p>
+    <p>Status: {{ order_status }}</p>
+    <p>Tracking No: {{ order.tracking_no }}</p>
+    <p>Payment Mode: {{ order.payment_mode }}</p>
+    {% if order.usercoupon %}
+    <p>Coupon Applied: {{ order.usercoupon.coupon.code }} ({{ order.usercoupon.coupon.discount }}% off)</p>
+    {% endif %}
+    <p>Shipping Address: {{ order.address.address }}, {{ order.address.city }}, {{ order.address.state }}, {{ order.address.country }}, {{ order.address.pincode }}</p>
+
+    <h2>Order Items:</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>PRODUCT</th>
+                <th>QUANTITY</th>
+                <th>PRICE</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in order_items %}
+            <tr>
+                <td>{{ item.product.product_name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>${{ item.price }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Summary:</h2>
+    <table>
+        <tbody>
+            <tr>
+                <th>SUBTOTAL:</th>
+                <td>${{ subtotal }}</td>
+            </tr>
+            <tr>
+                <th>TAX:</th>
+                <td>${{ tax }}</td>
+            </tr>
+            <tr>
+                <th>GRAND TOTAL:</th>
+                <td>${{ grand_total }}</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
+ {% endcomment %}
+
+
+ {% comment %} <!DOCTYPE html>
+<html>
+<head>
+    <title>Invoice</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #000; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>Invoice</h1>
+    <p>Order ID: {{ order.id }}</p>
+    <p>Order Date: {{ order.created_at }}</p>
+    <p>Status: {{ order_status }}</p>
+    <p>Tracking No: {{ order.tracking_no }}</p>
+    <p>Payment Mode: {{ order.payment_mode }}</p>
+    {% if order.usercoupon %}
+    <p>Coupon Applied: {{ order.usercoupon.coupon.code }} ({{ order.usercoupon.coupon.discount }}% off)</p>
+    {% endif %}
+    <p>Shipping Address: {{ order.address.address }}, {{ order.address.city }}, {{ order.address.state }}, {{ order.address.country }}, {{ order.address.pincode }}</p>
+    <h2>Order Items:</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in order_items %}
+            <tr>
+                <td>{{ item.product.product_name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>${{ item.price }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <h2>Summary:</h2>
+    <table>
+        <tbody>
+            <tr>
+                <th>Subtotal:</th>
+                <td>${{ subtotal }}</td>
+            </tr>
+            <tr>
+                <th>Coupon Discount:</th>
+                <td>${{ coupon_discount }}</td>
+            </tr>
+            <tr>
+                <th>Grand Total:</th>
+                <td>${{ grand_total }}</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html> {% endcomment %}
+
+
+
+{% comment %} <!DOCTYPE html>
+<html>
+<head>
+    <title>Invoice</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #000; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>Invoice</h1>
+    <p>Order ID: {{ order.id }}</p>
+    <p>Order Date: {{ order.created_at }}</p>
+    <p>Status: {{ order_status }}</p>
+    <p>Tracking No: {{ order.tracking_no }}</p>
+    <p>Payment Mode: {{ order.payment_mode }}</p>
+
+    {% if order.usercoupon %}
+    <p>Coupon Applied: {{ order.usercoupon.coupon.code }} ({{ order.usercoupon.coupon.discount }}% off)</p>
+    {% endif %}
+
+    <p>Shipping Address: {{ order.address.address }}, {{ order.address.city }}, {{ order.address.state }}, {{ order.address.country }}, {{ order.address.pincode }}</p>
+    
+    <h2>Order Items:</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in order_items %}
+            <tr>
+                <td>{{ item.product.product_name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>${{ item.price }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Summary:</h2>
+    <table>
+        <tbody>
+            <tr>
+                <th>Subtotal:</th>
+                <td>${{ subtotal }}</td>
+            </tr>
+            <tr>
+                <th>Coupon Discount:</th>
+                <td>-${{ coupon_discount }}</td>
+            </tr>
+            <tr>
+                <th>Grand Total:</th>
+                <td>${{ grand_total }}</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html> {% endcomment %}
+
+
+{% comment %} <!DOCTYPE html>
+<html>
+<head>
+    <title>Invoice</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #000; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>Invoice</h1>
+    <p>Order ID: {{ order.id }}</p>
+    <p>Order Date: {{ order.created_at }}</p>
+    <p>Status: {{ order_status }}</p>
+    <p>Tracking No: {{ order.tracking_no }}</p>
+    <p>Payment Mode: {{ order.payment_mode }}</p>
+
+    {% if coupon_discount > 0 %}
+    <p>Coupon Applied: {{ order.usercoupon.coupon.code }} ({{ order.usercoupon.coupon.discount }}% off)</p>
+    {% endif %}
+
+    <p>Shipping Address: {{ order.address.address }}, {{ order.address.city }}, {{ order.address.state }}, {{ order.address.country }}, {{ order.address.pincode }}</p>
+    
+    <h2>Order Items:</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in order_items %}
+            <tr>
+                <td>{{ item.product.product_name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>${{ item.price }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Summary:</h2>
+    <table>
+        <tbody>
+            <tr>
+                <th>Subtotal:</th>
+                <td>${{ subtotal }}</td>
+            </tr>
+            <tr>
+                <th>Tax:</th>
+                <td>${{ tax }}</td>
+            </tr>
+            {% if coupon_discount > 0 %}
+            <tr>
+                <th>Coupon Discount:</th>
+                <td>- ${{ coupon_discount }}</td>
+            </tr>
+            {% endif %}
+            <tr>
+                <th>Grand Total:</th>
+                <td>${{ grand_total }}</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html> {% endcomment %}
+
+
+{% comment %} <!DOCTYPE html>
+<html>
+<head>
+    <title>Invoice</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #000; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>Invoice</h1>
+    <p>Order ID: {{ order.id }}</p>
+    <p>Order Date: {{ order.created_at }}</p>
+    <p>Status: {{ order.status }}</p>
+    <p>Tracking No: {{ order.tracking_no }}</p>
+    <p>Payment Mode: {{ order.payment_mode }}</p>
+    {% if applied_coupon_discount %}
+    <p>Coupon Applied: {{ applied_coupon_discount }} (% off)</p>
+    {% endif %}
+    <p>Shipping Address: {{ order.shipping_address }}</p>
+
+    <h2>Order Items:</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>PRODUCT</th>
+                <th>QUANTITY</th>
+                <th>PRICE</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in order_items %}
+            <tr>
+                <td>{{ item.product.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>${{ item.price }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Summary:</h2>
+    <table>
+        <tbody>
+            <tr>
+                <th>SUBTOTAL:</th>
+                <td>$ ( {{ subtotal  }} + {{tax }} ) </td>
+            </tr>
+            <tr>
+                <th>COUPON DISCOUNT:</th>
+                <td>$ {{ coupon_discount }}</td>
+            </tr>
+            <tr>
+                <th>GRAND TOTAL:</th>
+                <td>$ {{ grand_total }}</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
+ {% endcomment %}
+
+
+
+
+
+
+
+
+
+
+ {% comment %} <!DOCTYPE html>
+<html>
+<head>
+    <title>Invoice</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #000; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>Invoice</h1>
+    <p>Order ID: {{ order.id }}</p>
+    <p>Order Date: {{ order.created_at }}</p>
+    <p>Status: {{ order_status }}</p> <p>Tracking No: {{ order.tracking_no }}</p>
+    <p>Payment Mode: {{ order.payment_mode }}</p>
+    
+
+    <p>Shipping Address: {{ shipping_address.address }}, {{ shipping_address.city }}, {{ shipping_address.state }}, {{ shipping_address.country }}, {{ shipping_address.pincode }}</p>
+
+    <h2>Order Items:</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>PRODUCT</th>
+                <th>QUANTITY</th>
+                <th>PRICE</th>
+                <th>TOTAL</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in order_items %}
+            <tr>
+                <td>{{ item.product.product_name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>${{ item.price }}</td>
+                {% comment %} <td>${{ item.quantity * item.price }}</td> {% endcomment %}
+                {% comment %} <td>${{ item.quantity|widthratio:item.price:100 }}</td> {% endcomment %}
+                {% comment %}<td>${{ item.quantity|multiply:item.price }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Summary:</h2>
+    <table>
+        <tbody>
+            <tr>
+                <th>SUBTOTAL:</th>
+                <td>$ {{ subtotal }}</td>
+            </tr>
+            <tr>
+                <th>COUPON DISCOUNT:</th>
+                <td>$ {{ coupon_discount }}</td>
+            </tr>
+            <tr>
+                <th>GRAND TOTAL:</th>
+                <td>$ {{ grand_total }}</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html> {% endcomment %}
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>LABELLA STORE - Invoice</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #000; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>LABELLA STORE - THANK YOU FOR SHOPPING WITH US!</h1>
+    <h1>Invoice</h1>
+    <p>Order ID: {{ order.id }}</p>
+    <p>Order Date: {{ order.created_at }}</p>
+    <p>Status: {{ order_status }}</p>
+    <p>Tracking No: {{ order.tracking_no }}</p>
+    <p>Payment Mode: {{ order.payment_mode }}</p>
+
+    <p>Shipping Address: {{ shipping_address.address }}, {{ shipping_address.city }}, {{ shipping_address.state }}, {{ shipping_address.country }}, {{ shipping_address.pincode }}</p>
+
+    <h2>Order Items:</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>PRODUCT</th>
+                <th>QUANTITY</th>
+                <th>PRICE</th>
+                <th>TOTAL</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for invoice_item in invoice_items %}
+            <tr>
+                <td>{{ invoice_item.item.product.product_name }}</td>
+                <td>{{ invoice_item.item.quantity }}</td>
+                <td>${{ invoice_item.item.price }}</td>
+                <td>${{ invoice_item.total_price }}</td> 
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Summary:</h2>
+    <table>
+        <tbody>
+            <tr>
+                <th>SUBTOTAL:</th>
+                <td>$ {{ subtotal }}</td>
+            </tr>
+            <tr>
+                <th>COUPON DISCOUNT:</th>
+                <td>$ {{ coupon_discount }}</td>
+            </tr>
+            <tr>
+                <th>GRAND TOTAL:</th>
+                <td>$ {{ grand_total }}</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

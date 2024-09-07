@@ -1,0 +1,104 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="card-body table-responsive">
+    <h4 class="card-title">Variation</h4>
+
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#productModal">
+        Add Variation
+    </button>
+    <div class="modal fade" id="productModal" tabindex="-1" role="dialog" aria-labelledby="productModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="productModalLabel">Add Variation</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'add_variants' %}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <div class="form-group">
+                            <label for="productCategory">Products</label>
+                            <select class="form-control" id="productCategory" name="product">
+                                {% for i in products %}
+                                <option value="{{i.id}}">{{i.product_name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="variationCategory">Variation Category</label>
+                            <select class="form-control" id="variationCategory" name="variation_category">
+                                {% for choice in choices %}
+                                <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="variationValue">Variation Value</label>
+                            <input type="text" class="form-control" id="variationValue" name="variation_value"
+                                placeholder="Enter variation value">
+                        </div>
+                        <div class="form-group">
+                            <label for="price">Price</label>
+                            <input type="number" class="form-control" id="price" name="price"
+                                placeholder="Enter variation price">
+                        </div>
+                        <div class="form-group">
+                            <label for="stock">Stock</label>
+                            <input type="number" class="form-control" id="stock" name="stock"
+                                placeholder="Enter variation stock">
+                        </div>
+                        <div class="form-group ms-4">
+                            <input type="checkbox" class="form-check-input" id="availabilityCheckbox"
+                                name="is_available" value="True">
+                            <label class="form-check-label pt-2" for="availabilityCheckbox">Available</label>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th> ID</th>
+                <th> Product Name </th>
+                <th> Variation Category </th>
+                <th> Variation Value </th>
+                <th> Price </th> 
+                <th> Stock </th> 
+                <th> Is Active </th>
+                <th> Actions </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for variant in variants %}
+            <tr>
+                <td> {{ variant.id }} </td>
+                <td> {{ variant.product.product_name }}</td>
+                <td> {{ variant.variation_category }}</td>
+                <td> {{ variant.variation_value }}</td>
+                <td> {{ variant.price }}</td> 
+                <td> {{ variant.stock }}</td> 
+                <td> {{ variant.is_active }}</td>
+                <td> 
+                    <a class="btn btn-danger me-2" href="{% url 'delete_variants' variant.id %}" role="button">Delete</a>
+                    <a class="btn btn-outline-primary" href="{% url 'edit_variants' variant.id %}" role="button">Edit</a> 
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

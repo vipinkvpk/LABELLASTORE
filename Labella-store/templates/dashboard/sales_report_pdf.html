@@ -1,0 +1,188 @@
+{% comment %} {% load custom_filters %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sales Report</title>
+    <style>
+        /* Add your CSS styling here for the PDF layout */
+        body {
+            font-family: sans-serif;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            word-wrap: break-word; /* Prevent content from overflowing */
+            
+        }
+    </style>
+</head>
+<body>
+    <h1>Sales Report</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Username</th>
+                <th>Total Amount</th>
+                <th>Discount</th>
+                <th>Paid Amount</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+                <tr>
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.user.username }}</td>
+                    <td>{{ order.total_price }}</td>
+                    <td>{{ order.coupon_discount }}</td>
+                    <td>{{ order.total_price|subtract:order.coupon_discount }}</td>
+                    <td>{{ order.created_at }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="2"><strong>Overall:</strong></td>
+                <td><strong>{{ overall_order_amount }}</strong></td>
+                <td><strong>{{ overall_discount }}</strong></td>
+                <td><strong>{{ overall_order_amount|subtract:overall_discount }}</strong></td>
+                <td></td> 
+            </tr>
+        </tfoot>
+    </table>
+</body>
+</html> {% endcomment %}
+
+
+{% comment %} <!DOCTYPE html>
+<html>
+<head>
+    <title>Sales Report</title>
+    <style>
+        /* Add your CSS styling here for the PDF layout */
+        body {
+            font-family: sans-serif;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed; /* Important for consistent column widths */
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            word-wrap: break-word; /* Prevent content from overflowing */
+        }
+    </style>
+</head>
+<body>
+    <h1>Sales Report</h1>
+    <table>
+        <thead>
+            <tr>
+                <th width="10%">Order ID</th>
+                <th width="20%">Username</th>
+                <th width="15%">Total Amount</th>
+                <th width="10%">Discount</th>
+                <th width="15%">Paid Amount</th>
+                <th width="20%">Date</th> 
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+                <tr>
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.user.username }}</td>
+                    <td>{{ order.total_price }}</td>
+                    <td>{{ order.coupon_discount }}</td>
+                    <td>{{ order.total_price|subtract:order.coupon_discount }}</td>
+                    <td>{{ order.paid_amount }}</td> 
+                    <td>{{ order.created_at }}</td> 
+                </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+        <tr>
+            <td colspan="2"><strong>Overall:</strong></td>
+            <td><strong>{{ overall_order_amount }}</strong></td>
+            <td><strong>{{ overall_discount }}</strong></td>
+            <td><strong>{{ overall_order_amount|subtract:overall_discount }}</strong></td>
+            <td><strong>{{ overall_paid_amount }}</strong></td> 
+
+            <td></td> 
+        </tr>
+    </tfoot>
+    </table>
+</body>
+</html> {% endcomment %}
+
+
+
+{% load custom_filters %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sales Report</title>
+    <style>
+        /* Add your CSS styling here for the PDF layout */
+        body {
+            font-family: sans-serif;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed; /* Important for consistent column widths */
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            word-wrap: break-word; /* Prevent content from overflowing */
+        }
+
+        td:last-child { /* Target the date column (last column) */
+            width: 20%; /* Adjust the width percentage as needed */
+        }
+    </style>
+</head>
+<body>
+    <h1>Sales Report</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Username</th>
+                <th>Total Amount</th>
+                <th>Discount</th>
+                <th>Paid Amount</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+                <tr>
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.user.username }}</td>
+                    <td>{{ order.total_price }}</td>
+                    <td>{{ order.coupon_discount }}</td>
+                    <td>{{ order.total_price|subtract:order.coupon_discount }}</td>
+                    <td>{{ order.created_at }}</td> 
+                </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="2"><strong>Overall:</strong></td>
+                <td><strong>{{ overall_order_amount }}</strong></td>
+                <td><strong>{{ overall_discount }}</strong></td>
+                <td><strong>{{ overall_order_amount|subtract:overall_discount }}</strong></td>
+                <td></td> 
+            </tr>
+        </tfoot>
+    </table>
+</body>
+</html>

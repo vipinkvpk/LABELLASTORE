@@ -1,0 +1,138 @@
+{% extends 'dashboard/base.html' %}
+
+
+
+{% block content %}
+
+{% load custom_filters %}
+<div class="container">
+    <h2>Sales Report</h2>
+
+    <form method="GET" action="{% url 'sales-report' %}"> 
+        <div class="form-group">
+            <label for="filter_type">Filter By:</label>
+            <select class="form-control" id="filter_type" name="filter_type">
+                <option value="">All Time</option>
+                <option value="day">Day</option>
+                <option value="week">Week</option>
+                <option value="month">Month</option>
+            </select>
+        </div>
+
+        <div class="form-group" id="date-filter" style="display: none;">
+            <label for="date">Select Date:</label>
+            <input type="date" class="form-control" id="date" name="date">
+        </div>
+
+        <div class="form-group" id="week-filter" style="display: none;">
+            <label for="week">Week Number:</label>
+            <input type="number" class="form-control" id="week" name="week" min="1" max="53"> 
+            <label for="year">Year:</label>
+            <input type="number" class="form-control" id="year" name="year" min="1900"> 
+        </div>
+
+        <div class="form-group" id="month-filter" style="display: none;">
+            <label for="month">Select Month:</label>
+            <input type="month" class="form-control" id="month" name="month">
+            <label for="year">Select Year:</label> 
+            <select class="form-control" id="year" name="year">
+                <option value="">All Years</option> <option value="{{ current_year }}" {% if not request.GET.year %}selected{% endif %}>{{ current_year }}</option>
+                {% for year in years %} 
+                    <option value="{{ year }}" {% if request.GET.year == year|stringformat:"s" %}selected{% endif %}>{{ year }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </form>
+
+    <br>
+    <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="downloadDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            Download Report
+        </button>
+        {% comment %} <ul class="dropdown-menu" aria-labelledby="downloadDropdown">
+            <li><a class="dropdown-item" href="{% url 'download-sales-report' 'pdf' %}">PDF</a></li>
+            <li><a class="dropdown-item" href="{% url 'download-sales-report' 'excel' %}">Excel (CSV)</a></li> 
+        </ul> {% endcomment %}
+        <ul class="dropdown-menu" aria-labelledby="downloadDropdown">
+            <li>
+                <a class="dropdown-item" href="{% url 'download-sales-report' 'pdf' %}?filter_type={{ request.GET.filter_type }}&date={{ request.GET.date }}&week={{ request.GET.week }}&year={{ request.GET.year }}&month={{ request.GET.month }}">PDF</a> 
+            </li>
+            <li>
+                <a class="dropdown-item" href="{% url 'download-sales-report' 'excel' %}?filter_type={{ request.GET.filter_type }}&date={{ request.GET.date }}&week={{ request.GET.week }}&year={{ request.GET.year }}&month={{ request.GET.month }}">Excel (CSV)</a> 
+            </li> 
+        </ul>
+    </div>
+
+    <br>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Username</th>
+                <th>Total Amount</th>
+                <th>Discount</th>
+                <th>Paid Amount</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+                <tr>
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.user.username }}</td>
+                    <td>{{ order.total_price }}</td>
+                    <td>{{ order.coupon_discount }}</td> 
+                    <td>{{ order.total_price|subtract:order.coupon_discount }}</td> 
+                    <td>{{ order.created_at }}</td> 
+                </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="2"><strong>Overall:</strong></td>
+                <td><strong>{{ overall_order_amount }}</strong></td>
+                <td><strong>{{ overall_discount }}</strong></td> 
+                <td><strong>{{ overall_order_amount|subtract:overall_discount }}</strong></td>
+                {% comment %} <td><strong>{{ overall_paid_amount }}</strong></td>  {% endcomment %}
+
+                <td></td> 
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+<script>
+    const filterTypeSelect = document.getElementById('filter_type');
+    const dateFilterDiv = document.getElementById('date-filter');
+    const weekFilterDiv = document.getElementById('week-filter'); // Get the week filter div
+    const monthFilterDiv = document.getElementById('month-filter');
+
+    filterTypeSelect.addEventListener('change', (event) => {
+        const selectedValue = event.target.value;
+
+        if (selectedValue === 'day') {
+            dateFilterDiv.style.display = 'block';
+            weekFilterDiv.style.display = 'none'; // Hide week filter
+            monthFilterDiv.style.display = 'none'; 
+        } else if (selectedValue === 'week') {
+            dateFilterDiv.style.display = 'none'; 
+            weekFilterDiv.style.display = 'block'; // Show week filter
+            monthFilterDiv.style.display = 'none';
+        } else if (selectedValue === 'month') {
+            dateFilterDiv.style.display = 'none'; 
+            weekFilterDiv.style.display = 'none'; // Hide week filter
+            monthFilterDiv.style.display = 'block';
+            // Automatically update the year input when the month changes
+            const monthInput = document.getElementById('month');
+        
+        } else {
+            dateFilterDiv.style.display = 'none'; 
+            weekFilterDiv.style.display = 'none'; // Hide week filter
+            monthFilterDiv.style.display = 'none'; 
+        }
+    });
+</script>
+
+{% endblock %}

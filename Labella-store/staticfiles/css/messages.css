@@ -1,0 +1,11 @@
+.messages {
+    /* Style the messages container if needed */
+    padding: 10px; 
+    margin-bottom: 15px; 
+}
+
+.alert-danger {
+    background-color: #f8d7da; /* Light red background */
+    border-color: #f5c6cb;     /* Red border */
+    color: #721c24;          /* Dark red text */
+}
